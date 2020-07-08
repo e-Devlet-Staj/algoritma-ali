@@ -9,7 +9,6 @@ public class NiceString {
 					return 0;
 				}
 			} catch (StringIndexOutOfBoundsException e) {}
-			
 		}
 		return 1;
 	}
@@ -36,14 +35,10 @@ public class NiceString {
 					return 1;
 				}
 			} catch (StringIndexOutOfBoundsException e) {}
-			
 		}
 		return 0;
 	}
 	public static void main(String args[]) {
-		// no bu ba be
-		// min x3 sesli harf
-		// abba atta tarzi ikili sessiz
 		Scanner input = new Scanner(System.in);
 		System.out.println("Enter the string:");
 		String inputString = input.nextLine();

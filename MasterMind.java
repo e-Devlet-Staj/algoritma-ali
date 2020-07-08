@@ -3,15 +3,7 @@ import java.util.Scanner;
 
 
 public class MasterMind {
-	public static int numberOf(String str,char c) {
-	    int res=0;
-	    if(str==null)
-	        return res;
-	    for(int i=0;i<str.length();i++)
-	        if(c==str.charAt(i))
-	            res++;
-	    return res;
-	}
+
 	public static void main(String args[]) {
 		Scanner input = new Scanner(System.in);
 		System.out.println("Enter the secret code:");
@@ -19,20 +11,21 @@ public class MasterMind {
 		String attempt ="";
 		int positions =0;
 		int letters =0;
-		int[] countSecretCode = new int[6];
-		int[] countAttempt = new int[6];
 		char temp =' ';
-		char[] attemptArray = new char[4];
-		System.out.printf("Enter your guess: (Code length is %d) "
-				+ "---Press 'x' to give up---\n" ,secretCode.length());
+		char[] attemptArray = new char[secretCode.length()];
 		while(true) {
+			System.out.printf("(Code length is %d)"
+					+ "\nEnter your guess:          ---Press 'x' to give up---\n" ,secretCode.length());
 			positions =0;
-			letters =0;
-			
+			letters =0;	
 			attempt=input.nextLine();
 			if(attempt.equals("x")) {
 				System.out.println("Game is closed");
 				return;
+			}
+			if(attempt.length()!=secretCode.length()) {
+				System.out.println("The given code's length is different than secret code.");
+				continue;
 			}
 			for(int i=0;i<secretCode.length();i++) {
 				if(secretCode.charAt(i)==attempt.charAt(i)) {
@@ -40,25 +33,25 @@ public class MasterMind {
 				}
 			}
 			attemptArray=attempt.toCharArray();
+			//attemptimizde secretCode daki harflerden herhangi birini görünce(index önemsenmeksizin)
+			//attempin o charını 0 a ceviriyoruz ki daha sonraki aramalarda tekrardan saymayalım
 			for(int i=0;i<secretCode.length();i++) {
 				temp=secretCode.charAt(i);
 				for(int j=0;j<attempt.length();j++) {
 					if(attemptArray[j]==temp) {
 						attemptArray[j]='0';
+						letters++;
 						break;
 					}
 				}
 			}
-			for(int i=0;i<attemptArray.length;i++) {
-				if(attemptArray[i]=='0') {
-					letters++;
-				}
-			}
-			
+			//yukardaki letters sayma metodu aynı indexte olanları da dahil ettiği için
+			//positions ı cıkarmamız lazım
+			letters-=positions;
 			System.out.printf("Positions: %d\n",positions);
-			System.out.printf("Letters: %d\n",letters-positions);
-			System.out.println("_________________________________________________");
-			if(positions == 4) {
+			System.out.printf("Letters: %d\n",letters);
+			System.out.println("|||||||||||||||||||||||||||||||||||||");
+			if(positions == secretCode.length()) {
 				System.out.println("Congrats you guessed the secret code correctly :)");
 				return;
 			}
