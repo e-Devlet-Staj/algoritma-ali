@@ -1,6 +1,17 @@
 import java.util.Scanner;
 
 public class NiceString {
+	public static void main(String args[]) {
+		Scanner input = new Scanner(System.in);
+		System.out.println("Enter the string:");
+		String inputString = input.nextLine();
+		if( (doubleLetter(inputString)+doesntContainBubabe(inputString)+ min3Vowel(inputString)) < 2  ) {
+			System.out.println("Not a nice string");
+		}
+		else {
+			System.out.println("Is nice string");
+		}
+	}
 	public static int doesntContainBubabe (String string) {
 		for(int i=0;i<string.length();i++) {
 			try {
@@ -12,7 +23,6 @@ public class NiceString {
 		}
 		return 1;
 	}
-	
 	public static int min3Vowel(String string) {
 		int count =0;
 		String vowels = "aeiou";
@@ -26,8 +36,7 @@ public class NiceString {
 			}
 		}
 		return 0;
-	}
-	
+	}	
 	public static int doubleLetter(String string) {
 		for(int i=0;i<string.length();i++) {
 			try {
@@ -37,16 +46,5 @@ public class NiceString {
 			} catch (StringIndexOutOfBoundsException e) {}
 		}
 		return 0;
-	}
-	public static void main(String args[]) {
-		Scanner input = new Scanner(System.in);
-		System.out.println("Enter the string:");
-		String inputString = input.nextLine();
-		if( (doubleLetter(inputString)+doesntContainBubabe(inputString)+ min3Vowel(inputString)) < 2  ) {
-			System.out.println("Not a nice string");
-		}
-		else {
-			System.out.println("Is nice string");
-		}
 	}
 }

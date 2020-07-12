@@ -1,9 +1,6 @@
 import java.util.Scanner;
 
-
-
 public class MasterMind {
-
 	public static void main(String args[]) {
 		Scanner input = new Scanner(System.in);
 		System.out.println("Enter the secret code:");
@@ -55,7 +52,6 @@ public class MasterMind {
 				System.out.println("Congrats you guessed the secret code correctly :)");
 				return;
 			}
-		}
-		
+		}	
 	}
 }
