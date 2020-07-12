@@ -1,87 +1,32 @@
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.HashSet;
 
 public class ProductPartitions {
-	/*static int productCombinationNum(int num) {
-		int cnt = 0; 
-        for (int i = 1; i <= Math.sqrt(num); i++) { // checking prime divisors till numbers square root is enough
-            if (num % i == 0) { 
-                // If divisors are equal, 
-                // count only one 
-                if (num / i == i) {
-                    cnt++; }
-  
-                else {
-                    cnt = cnt + 2; }
-                
-            } 
-        } 
-        return cnt;
-	}*/
-	
-	static int productCombinationNum(int num) {
-		int cnt = -1; 
-		int temp =1;
-		HashMap<Integer,Integer> divisorInfo = new  HashMap();
-        if(num%2!=0) {
-        	if(num==1) {
-        		return 1;
-        	}
-        	else {
-        		for(int i=3; num>1;i+=2) {
-        			if(num%i==0) {
-            			if(!divisorInfo.containsKey(i)) {
-            				divisorInfo.put(i, 1);
-            			}
-            			else {
-            				divisorInfo.put(i, divisorInfo.get(i)+1);
-            			}
-            			num/=i;
-            			i-=2;
-            		}
-        		}
-        	}
-        }
-        else {
-		for(int i=2;num>1;i++) {
-        		if(num%i==0) {
-        			if(!divisorInfo.containsKey(i)) {
-        				divisorInfo.put(i, 1);
-        			}
-        			else {
-        				divisorInfo.put(i, divisorInfo.get(i)+1);
-        			}
-        			num/=i;
-        			i--;
-        		}
-        	}    
-        }
-        
-        //Given any number can shown as product of primes, 2^A x 3^B x ...
-        //the result should a function like this -->f(A,B,...)
-        //
-        //
-        
-        System.out.println(divisorInfo.values().toArray()[0]);
-        
-        return 0;
+	public static void main(String args[]) {
+		/*you can try any number with
+		* prod_int_part(x) 				*/ 
 	}
-	
-	static void prod_int_part(int n) { 
-        System.out.print("[" + (productCombinationNum(n)-2) + ", [");  //we substract 2 because we are not getting 1 and the number itself 
-        while (n % 2 == 0) { 
+	static void prod_int_part(int number) { 
+        System.out.print("[" + (productCombinationNum(number)) + ", ["); 
+        int temp = number;
+        while (temp % 2 == 0) { 
+        	temp /= 2; 
+        	if(temp==1) {
+        		System.out.println("2]]");
+        		return;
+        	}
             System.out.print(2 + ", "); 
-            n /= 2; 
+            
         } 
         // n must be odd at this point.  So we can 
-        // skip one element (Note i = i +2) 
-        for (int i = 3; i <= Math.sqrt(n); i += 2) { 
+        // increase i by 2 at every loop 
+        for (int i = 3; i <= Math.sqrt(number)+1; i += 2) { 
             // While i divides n, print i and divide n 
-            while (n % i == 0) { 
+            while (temp % i == 0) { 
                 System.out.print(i); 
-                n /= i;
-                if(n!=1) {
+                temp /= i;
+                if(temp!=1) {
                 	System.out.print(", ");
                 }
                 else {
@@ -89,16 +34,77 @@ public class ProductPartitions {
                 }
             } 
         }
-        // This condition is to handle the case whien 
-        // n is a prime number greater than 2 
-        
         System.out.print("]]");
     } 
-	public static void main(String args[]) {
-		//prod_int_part(18);
-		//HashSet<String[]> xd = new HashSet<String[]>();
-		productCombinationNum(81);
-		
-		
+	static int productCombinationNum(int number) {
+		int[] allDivisors=divisors(number);
+		int size = primeDivisorNum(number);
+		int maxSize =(int) Math.pow(allDivisors.length, size);
+		if(size>allDivisors.length || size <=1) {
+			return 0;
+		}
+		HashSet<String> unique = new HashSet<String>();
+		int[] indexQueue = new int[size];
+		int temp= 0;
+		int product = 1;
+		String tempString = "";
+		for(int i =0;i<maxSize ;i++) {
+			temp = i;
+			for(int j = 0;j<size;j++) {
+				indexQueue[j]=temp%allDivisors.length;
+				temp/=allDivisors.length;
+			}
+			product=1;
+			for(int j = 0;j<size;j++) {
+				product*=allDivisors[indexQueue[j]];
+			}
+			if(product == allDivisors[1]*allDivisors[2]) {
+				tempString= "";
+				Arrays.sort(indexQueue);
+				for(int j = 0;j<size;j++) {
+					tempString=tempString.concat(Integer.toString(allDivisors[indexQueue[j]]));
+					tempString=tempString.concat(",");
+				}
+				unique.add(tempString);
+			}
+		}
+		return unique.size();
+	}
+	//converts int ArrayList to int[]
+	public static int[] convertIntegers(ArrayList<Integer> integers){
+	    int[] ret = new int[integers.size()];
+	    for (int i=0; i < ret.length; i++)
+	    {
+	        ret[i] = integers.get(i).intValue();
+	    }
+	    return ret;
+	}
+	//finds all divisors of given number and puts them into an int array
+	public static int[] divisors(int num) {
+		ArrayList<Integer> allDivisors = new ArrayList<Integer>();
+		allDivisors.add(1);
+		int temp=num;
+		for(int i =2; i<Math.pow(num, 0.5)+1;i++) {
+			if(temp%i==0) {
+				temp=num/i;
+				allDivisors.add(i);
+				allDivisors.add(temp);
+			}
+		}
+		return convertIntegers(allDivisors);
+	}
+	/*for a given number x 
+	  we can represent it like x = 2^A x 3^B x ....
+	  this function returns a+b+...   				*/
+	static int primeDivisorNum(int x) {
+		int count = 0;
+		for(int i =2;x!=1;i++) {
+			if(x%i==0) {
+				count++;
+				x/=i;
+				i--;
+			}
+		}
+		return count;
 	}
 }
