@@ -6,6 +6,7 @@ public class ProductPartitions {
 	public static void main(String args[]) {
 		/*you can try any number with
 		* prod_int_part(x) 				*/ 
+		prod_int_part(420);
 	}
 	static void prod_int_part(int number) { 
         System.out.print("[" + (productCombinationNum(number)) + ", ["); 
@@ -16,8 +17,7 @@ public class ProductPartitions {
         		System.out.println("2]]");
         		return;
         	}
-            System.out.print(2 + ", "); 
-            
+            System.out.print(2 + ", ");   
         } 
         // n must be odd at this point.  So we can 
         // increase i by 2 at every loop 
@@ -68,6 +68,7 @@ public class ProductPartitions {
 				unique.add(tempString);
 			}
 		}
+		System.out.println(unique);
 		return unique.size();
 	}
 	//converts int ArrayList to int[]
@@ -85,8 +86,13 @@ public class ProductPartitions {
 		allDivisors.add(1);
 		int temp=num;
 		for(int i =2; i<Math.pow(num, 0.5)+1;i++) {
-			if(temp%i==0) {
-				temp=num/i;
+			if(num%i==0) {
+				temp=num;
+				temp/=i;
+				if(i>=Math.pow(num, 0.5)) {
+					allDivisors.add(i);
+					break;
+				}
 				allDivisors.add(i);
 				allDivisors.add(temp);
 			}
