@@ -6,7 +6,6 @@ public class ProductPartitions {
 	public static void main(String args[]) {
 		/*you can try any number with
 		* prod_int_part(x) 				*/ 
-		prod_int_part(420);
 	}
 	static void prod_int_part(int number) { 
         System.out.print("[" + (productCombinationNum(number)) + ", ["); 
@@ -50,15 +49,14 @@ public class ProductPartitions {
 		String tempString = "";
 		for(int i =0;i<maxSize ;i++) {
 			temp = i;
-			for(int j = 0;j<size;j++) {
-				indexQueue[j]=temp%allDivisors.length;
-				temp/=allDivisors.length;
-			}
 			product=1;
 			for(int j = 0;j<size;j++) {
+				indexQueue[j]=temp%allDivisors.length;
 				product*=allDivisors[indexQueue[j]];
+				if(product>number) {break;}
+				temp/=allDivisors.length;
 			}
-			if(product == allDivisors[1]*allDivisors[2]) {
+			if(product == number) { 
 				tempString= "";
 				Arrays.sort(indexQueue);
 				for(int j = 0;j<size;j++) {
@@ -68,14 +66,12 @@ public class ProductPartitions {
 				unique.add(tempString);
 			}
 		}
-		System.out.println(unique);
 		return unique.size();
 	}
 	//converts int ArrayList to int[]
 	public static int[] convertIntegers(ArrayList<Integer> integers){
 	    int[] ret = new int[integers.size()];
-	    for (int i=0; i < ret.length; i++)
-	    {
+	    for (int i=0; i < ret.length; i++){
 	        ret[i] = integers.get(i).intValue();
 	    }
 	    return ret;
@@ -99,9 +95,9 @@ public class ProductPartitions {
 		}
 		return convertIntegers(allDivisors);
 	}
-	/*for a given number x 
-	  we can represent it like x = 2^A x 3^B x ....
-	  this function returns a+b+...   				*/
+	/*for a given number n 
+	  we can represent it like n = 2^A x 3^B x ....
+	  this function returns A+B+...   				*/
 	static int primeDivisorNum(int x) {
 		int count = 0;
 		for(int i =2;x!=1;i++) {
