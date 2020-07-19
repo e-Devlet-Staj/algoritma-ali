@@ -18,10 +18,10 @@ public class ProductPartitions {
         	}
             System.out.print(2 + ", ");   
         } 
-        // n must be odd at this point.  So we can 
-        // increase i by 2 at every loop 
+        // temp must be odd at this point.  So we can 
+        // increase i by 2 at every loop bcs all primes except 2 are odd
         for (int i = 3; i <= Math.sqrt(number)+1; i += 2) { 
-            // While i divides n, print i and divide n 
+            // While i divides temp, print i and divide temp
             while (temp % i == 0) { 
                 System.out.print(i); 
                 temp /= i;
@@ -76,7 +76,9 @@ public class ProductPartitions {
 	    }
 	    return ret;
 	}
-	//finds all divisors of given number and puts them into an int array
+	/*finds all divisors of given number and puts them into an int array 
+	  divisors array contains 1 because by that way we act as empty space
+	  we store (2 x 4 x 9) as (2 x 4 x 9 x 1 x 1) so that we use the same sized array for all combination*/
 	public static int[] divisors(int num) {
 		ArrayList<Integer> allDivisors = new ArrayList<Integer>();
 		allDivisors.add(1);
