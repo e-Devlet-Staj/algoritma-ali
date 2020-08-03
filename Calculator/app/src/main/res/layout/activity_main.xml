@@ -7,17 +7,19 @@
     android:layout_alignParentRight="false"
     android:background="@android:color/black"
     android:isScrollContainer="false"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
 
-    <TextView
-        android:id="@+id/history"
-        android:layout_width="match_parent"
-        android:layout_height="211dp"
-        android:layout_weight="0"
-        android:gravity="right"
-        android:textColor="@color/numberButton"
-        android:textSize="22sp" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="409dp"
+        android:layout_height="241dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/numberButton"/>
 
     <TextView
         android:id="@+id/tvExpression"
@@ -32,12 +34,13 @@
     <TextView
         android:id="@+id/tvResult"
         android:layout_width="match_parent"
-        android:layout_height="63dp"
-        android:ellipsize="end"
+        android:layout_height="wrap_content"
+        android:ellipsize="start"
         android:gravity="end"
         android:singleLine="true"
-        android:textColor="#FFFFFF"
-        android:textSize="30sp" />
+        android:textColor="@color/numberButton"
+        android:textSize="30sp"
+        android:visibility="visible" />
 
 
 
