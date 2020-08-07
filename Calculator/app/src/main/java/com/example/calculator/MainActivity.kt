@@ -1,22 +1,25 @@
 package com.example.calculator
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
-import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.realm.Realm
+import io.realm.RealmConfiguration
+import io.realm.exceptions.RealmException
 import kotlinx.android.synthetic.main.activity_main.*
 import net.objecthunter.exp4j.ExpressionBuilder
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 class MainActivity : AppCompatActivity() {
-    lateinit var etUser: EditText
-    lateinit var etPwd: EditText
-    lateinit var etUserName: EditText
+
     lateinit var  realm: Realm
     val historyList = ArrayList<String>()
     var expression = ""
@@ -24,17 +27,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         //Realm
-        //realm = Realm.getDefaultInstance()
-        /* Realm.init(this)
-         val config = RealmConfiguration.Builder()
-             .name("History.realm").build()
-         val realm = Realm.getInstance(config)
-
-         realm.beginTransaction()
-         val history = realm.createObject(History::class.java, 1)
-         history.history = "dfzf"
-         realm.commitTransaction()*/
-
+        Realm.init(this)
+        val config = RealmConfiguration.Builder()
+            .name("myrealm.realm")
+            .schemaVersion(42)
+            .build()
+        Realm.setDefaultConfiguration(config)
+        realm = Realm.getDefaultInstance()
+        getOldHistoryToArrayList(historyList)
 
 
         //adapter
@@ -200,6 +200,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun getOldHistoryToArrayList(historyList: ArrayList<String>) {
+        var realmResults = realm.where(History::class.java).findAll()
+        for (i in 0..realmResults.size-1){
+            var time = realmResults.get(i)?.getTime() ?: "null"
+            var calculation: String = realmResults.get(i)?.getCalculation() ?: "null"
+            historyList.add("$calculation                 $time")
+        }
+    }
+
     //to avoid arbitrary operator ("--" , "+x" , ".." , "+." , ...)
     fun canAddOperator(tvExpression: String): Boolean{
         if(tvExpression.endsWith("+") || tvExpression.endsWith("-") ||
@@ -223,22 +232,6 @@ class MainActivity : AppCompatActivity() {
             tvResult.visibility = VISIBLE
         }catch (e: Exception) {tvResult.visibility = INVISIBLE}
     }
-    private fun previousNumberString(expression: String): String{
-        var beginningIndex = 0
-        var temp = ' '
-        for(x in expression.length-1..0){
-
-            if(expression.get(x)=='+' || expression.get(x)=='-' ||
-                expression.get(x)=='*' || expression.get(x)=='/'){
-                val substring = expression.substring(x+1)
-                println(substring)
-                return substring
-            }
-        }
-
-        return ""
-
-    }
     fun showHide(view: View) {
         view.visibility = if (view.visibility == View.VISIBLE){
             View.GONE
@@ -259,8 +252,47 @@ class MainActivity : AppCompatActivity() {
         tryToEvaluate(this.expression)
     }
     fun updateHistoryList(){
-        historyList.add(tvExpression.text.toString())
-        historyList.add("="+tvResult.text.toString())
+        addCalculationToDB(tvExpression.text.toString())
+        realmDataToArrayList()
+        addCalculationToDB("="+tvResult.text.toString())
+        realmDataToArrayList()
+    }
+    fun addCalculationToDB(calculation: String){
+        realm.beginTransaction()
+        try{
+            val nextId: Long = realm.where(History::class.java).count()+1
+            val lastCalculation = realm.createObject(History::class.java,nextId)
+            val time  = showCurrentTime()
+            lastCalculation.setCalculation(calculation)
+            lastCalculation.setTime(showCurrentTime())
+            realm.commitTransaction()
+        }catch (e: RealmException){
+            Log.d("Tag", e.message.toString())
+        }
+    }
+
+    //adds the last element to arraylist
+    fun realmDataToArrayList(){
+        var realmResults = realm.where(History::class.java).findAll()
+        var id: Long = realmResults.get(realmResults.size-1)?.getId() ?: 1
+        var calculation: String = realmResults.get(realmResults.size-1)?.getCalculation() ?: "null"
+        var time = realmResults.get(realmResults.size-1)?.getTime() ?: "null"
+        val k= "$calculation                 $time"
+        historyList.add(k)
+    }
+    private fun showCurrentTime(): String{
+        val current = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LocalDateTime.now()
+        } else {
+            TODO("VERSION.SDK_INT < O")
+        }
+        val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+        val formatted = current.format(formatter)
+        return formatted
     }
 }
+
+
+
+
 
